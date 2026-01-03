@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "sphere.h"
 #include "hittable_list.h"
+#include "bvh.h"
 #include "camera.h"
 #include "material.h"
 
@@ -52,7 +53,7 @@ HittableList build_scene() {
 
     world.add(std::make_shared<Sphere>(Vec3(0.0, -100.5, -1.0), 100.0, material_ground));
 
-    const int grid_size = 6;
+    const int grid_size = 15;
     const double sphere_radius = 0.1;
     const double spacing = 0.26;
     const Vec3 center_offset(-0.5, 0.0, -2.5);
@@ -66,7 +67,7 @@ HittableList build_scene() {
                 double choose = random_double();
                 if (choose < 0.2) mat = material_gold;
                 else if (choose < 0.5) mat = material_red;
-				//else if (choose < 0.6) mat = material_green;
+				else if (choose < 0.6) mat = material_green;
 				else if (choose < 0.55) mat = material_emission;
                 else mat = material_glass;
 				// mat = material_red;
@@ -78,7 +79,7 @@ HittableList build_scene() {
     return world;
 }
 
-inline Color render_pixel(int i, int j, int image_width, int image_height, int samples_per_pixel, const Camera& camera, const HittableList& world, int max_depth) {
+inline Color render_pixel(int i, int j, int image_width, int image_height, int samples_per_pixel, const Camera& camera, const Hittable& world, int max_depth) {
 	Color pixel_color(0,0,0);
 
 	for (int s = 0; s < samples_per_pixel; ++s) {
@@ -90,7 +91,7 @@ inline Color render_pixel(int i, int j, int image_width, int image_height, int s
 	return pixel_color;
 }
 
-void render_image(std::vector<Color>& framebuffer, int image_width, int image_height, int samples_per_pixel, const Camera& camera, const HittableList& world, int max_depth) {
+void render_image(std::vector<Color>& framebuffer, int image_width, int image_height, int samples_per_pixel, const Camera& camera, const Hittable& world, int max_depth) {
 	#pragma omp parallel for schedule(dynamic)
 	for (int j = 0; j < image_height; ++j) {
 		for (int i = 0; i < image_width; ++i) {
@@ -120,9 +121,21 @@ int main() {
 	const int image_width = 1600;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
 	const int samples_per_pixel = 500;
-	const int max_depth = 20;
+	const int max_depth = 10;
+
+	std::cout << "Rendering a " << image_width << "x" << image_height << " image with "
+			  << samples_per_pixel << " samples per pixel and max depth " << max_depth << ".\n";
+	std::cout << "Building Scene...\n";
 
 	HittableList world = build_scene();
+	std::cout << "Building BVH...\n";
+	auto start_bvh = std::chrono::high_resolution_clock::now();
+	BVHNode bvh_tree(world);
+	auto end_bvh = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> bvh_duration = end_bvh - start_bvh;
+	std::cout << "BVH built in " << bvh_duration.count() << " seconds" << std::endl;
+
+	// HittableList world = build_scene();
 	Camera camera = build_camera(aspect_ratio);
 	std::vector<Color> framebuffer(image_width * image_height);
 	
@@ -130,7 +143,7 @@ int main() {
 			framebuffer,
 			image_width, image_height,
 			samples_per_pixel,
-			camera, world, max_depth
+			camera, bvh_tree, max_depth
 	);
 	
 	write_image(

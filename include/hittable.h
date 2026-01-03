@@ -3,6 +3,7 @@
 
 #include "ray.h"
 #include "vec3.h"
+#include "aabb.h"
 #include <memory>
 
 class Material;
@@ -53,6 +54,7 @@ public:
 	// the computer has to look up which version of hit() to run at runtime ("vtable loopup")
 	virtual bool hit(const Ray& ray, double t_min, double t_max, HitRecord& record) const = 0;
 
+	virtual bool bounding_box(AABB& output_box) const = 0;
 };
 
 #endif

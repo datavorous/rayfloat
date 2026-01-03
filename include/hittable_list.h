@@ -2,7 +2,7 @@
 #define HITTABLE_LIST_H
 
 #include "hittable.h"
-
+#include "aabb.h"
 #include <vector>
 #include <memory>
 
@@ -50,7 +50,22 @@ public:
 			}
 		}
 		return hit_anything;
-	} 
+	}
+	
+	bool bounding_box(AABB& output_box) const override {
+		if (objects.empty()) return false;
+
+		AABB temp_box;
+		bool first_box = true;
+
+		for (const auto& object : objects) {
+			if (!object->bounding_box(temp_box))
+				return false;
+			output_box = first_box ? temp_box : AABB::surrounding_box(output_box, temp_box);
+			first_box = false;
+		}
+		return true;
+	}
 };
 
 #endif

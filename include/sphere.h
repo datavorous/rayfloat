@@ -73,6 +73,14 @@ public:
 		
 		return true;
 	}
+
+	bool bounding_box(AABB& output_box) const override {
+		output_box = AABB(
+			center - Vec3(radius, radius, radius),
+			center + Vec3(radius, radius, radius)
+		);
+		return true;
+	}
 };
 
 #endif

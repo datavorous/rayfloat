@@ -1,6 +1,6 @@
 # Rayfloat
 
-A multithreaded, Monte Carlo CPU path tracer with iterative light transport integrator built to study performance, memory behaviour and algorithmic bottlenecks on multi-core CPUs.
+A multithreaded, Monte Carlo CPU path tracer using a Whitted-style, iterative light transport integrator built to study performance, memory behaviour and algorithmic bottlenecks on multi-core CPUs.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ A multithreaded, Monte Carlo CPU path tracer with iterative light transport inte
 - Materials are modeled as _BSDF-like_ scattering functions that stochastically generate outgoing rays and attenuate energy (lambertian, dielectric, metal, emissive)
 - Parallelizes rendering across image rows using OpenMP and employs a thread-local RNG (XorShift)
 - Iterative ray traversal (no recursion)
-- Bounding Volume Hierarchy (WIP)
+- Bounding Volume Hierarchy (Median Split Strategy) has been implemented
 
 ## Documentation
 
