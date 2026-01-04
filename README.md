@@ -1,6 +1,6 @@
 # Rayfloat
 
-A multithreaded, Monte Carlo CPU path tracer using a Whitted-style, iterative light transport integrator built to study performance, memory behaviour and algorithmic bottlenecks on multi-core CPUs.
+A multithreaded, BVH enabled, cpu path tracer using a Whitted-style, iterative light transport integrator built to study performance, memory behaviour and algorithmic bottlenecks on multi-core CPUs.
 
 ## Table of Contents
 
@@ -13,7 +13,9 @@ A multithreaded, Monte Carlo CPU path tracer using a Whitted-style, iterative li
 
 ## Demo
 
-<img src="media/banner.png" width="600">
+<img src="media/render1.png">
+
+<img src="media/render2.png">
 
 ## Highlights
 

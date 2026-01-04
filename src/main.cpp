@@ -35,15 +35,20 @@ void write_color(std::ostream& out, const Color& pixel_color, int samples_per_pi
 }
 
 Camera build_camera(double aspect_ratio) {
-    Vec3 lookfrom(1, 5.0, 1.0);
-    Vec3 lookat(0, 0.1, -2.5);
+    // Vec3 lookfrom(1, 5.0, 1.0);
+    // Vec3 lookat(0, 0.1, -2.5);
+    // Vec3 vup(0, 1, 0);
+    // double vfov = 30.0;
+	Vec3 lookfrom(0, 0, 0);
+    Vec3 lookat(0, 0, -1);
     Vec3 vup(0, 1, 0);
-    double vfov = 30.0;
+    double vfov = 90.0;
     return Camera(lookfrom, lookat, vup, vfov, aspect_ratio);
 }
 
 HittableList build_scene() {
     HittableList world;
+	/**
     auto material_ground = std::make_shared<Lambertian>(Color(0.1, 0.1, 0.1));
     auto material_glass = std::make_shared<Dielectric>(1.5);
     auto material_gold = std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.05);
@@ -53,7 +58,7 @@ HittableList build_scene() {
 
     world.add(std::make_shared<Sphere>(Vec3(0.0, -100.5, -1.0), 100.0, material_ground));
 
-    const int grid_size = 15;
+    const int grid_size = 4;
     const double sphere_radius = 0.1;
     const double spacing = 0.26;
     const Vec3 center_offset(-0.5, 0.0, -2.5);
@@ -67,7 +72,7 @@ HittableList build_scene() {
                 double choose = random_double();
                 if (choose < 0.2) mat = material_gold;
                 else if (choose < 0.5) mat = material_red;
-				else if (choose < 0.6) mat = material_green;
+				// 	else if (choose < 0.6) mat = material_green;
 				else if (choose < 0.55) mat = material_emission;
                 else mat = material_glass;
 				// mat = material_red;
@@ -76,6 +81,18 @@ HittableList build_scene() {
             }
         }
     }
+	*/
+	auto material_ground = std::make_shared<Lambertian>(Color(0.92, 0.86, 0.70));
+	auto material_red = std::make_shared<Lambertian>(Color(0.62, 0.12, 0.09));
+	auto material_white = std::make_shared<Lambertian>(Color(0.96, 0.94, 0.85));
+	auto material_gold = std::make_shared<Lambertian>(Color(0.70, 0.50, 0.20));
+	auto material_blue = std::make_shared<Lambertian>(Color(0.27, 0.36, 0.36));
+
+	world.add(std::make_shared<Sphere>(Vec3(0.0, -100.5, -1.0), 100.0, material_ground));
+	world.add(std::make_shared<Sphere>(Vec3(0.0, 0.0, -1.5), 0.5, material_red));
+	world.add(std::make_shared<Sphere>(Vec3(-0.6, -0.3, -0.8), 0.2, material_white));
+	world.add(std::make_shared<Sphere>(Vec3(0.8, -0.2, -1.0), 0.3, material_gold));
+	world.add(std::make_shared<Sphere>(Vec3(-1.5, 0.2, -2.5), 0.7, material_blue));
     return world;
 }
 
