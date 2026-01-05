@@ -27,5 +27,3 @@ vgcore.*
 *.swp
 *.swo
 .DS_Store
-
-docs/
